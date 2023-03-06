@@ -10,3 +10,9 @@ func (ctx *accountVmContext) IsAcceleratorSporkEnforced() bool {
 	common.DealWithErr(err)
 	return active
 }
+
+func (ctx *accountVmContext) IsPtlcSporkEnforced() bool {
+	active, err := ctx.momentumStore.IsSporkActive(types.PtlcSpork)
+	common.DealWithErr(err)
+	return active
+}

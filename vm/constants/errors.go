@@ -58,4 +58,12 @@ var (
 
 	// Spork
 	ErrAlreadyActivated = errors.New("spork is already activated")
+
+	// Ptlc
+	ReclaimNotDue            = errors.New("entry is not expired")
+	ErrInvalidPointType      = errors.New("invalid point type")
+	ErrInvalidPointLock      = errors.New("invalid point lock")
+	ErrInvalidPointSignature = errors.New("invalid signature")
+	ErrInvalidExpirationTime = errors.New("invalid expiration time")
+	ErrExpired               = errors.New("expired")
 )

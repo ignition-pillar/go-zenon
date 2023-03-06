@@ -34,7 +34,21 @@ type embeddedImplementation struct {
 var (
 	originEmbedded      = getOrigin()
 	acceleratorEmbedded = getAccelerator()
+	ptlcEmbedded        = getPtlc()
 )
+
+func getPtlc() map[types.Address]*embeddedImplementation {
+	contracts := getAccelerator()
+	contracts[types.PtlcContract] = &embeddedImplementation{
+		map[string]Method{
+			cabi.CreatePtlcMethodName:  &implementation.CreatePtlcMethod{cabi.CreatePtlcMethodName},
+			cabi.ReclaimPtlcMethodName: &implementation.ReclaimPtlcMethod{cabi.ReclaimPtlcMethodName},
+			cabi.UnlockPtlcMethodName:  &implementation.UnlockPtlcMethod{cabi.UnlockPtlcMethodName},
+		},
+		cabi.ABIPtlc,
+	}
+	return contracts
+}
 
 func getAccelerator() map[types.Address]*embeddedImplementation {
 	contracts := getOrigin()
@@ -155,7 +169,9 @@ func GetEmbeddedMethod(context vm_context.AccountVmContext, address types.Addres
 	}
 
 	var contractsMap map[types.Address]*embeddedImplementation
-	if context.IsAcceleratorSporkEnforced() {
+	if context.IsPtlcSporkEnforced() {
+		contractsMap = ptlcEmbedded
+	} else if context.IsAcceleratorSporkEnforced() {
 		contractsMap = acceleratorEmbedded
 	} else {
 		contractsMap = originEmbedded

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/btcsuite/btcutil/bech32"
+	"github.com/btcsuite/btcd/btcutil/bech32"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -29,9 +29,10 @@ var (
 	SwapContract        = parseEmbedded("z1qxemdeddedxswapxxxxxxxxxxxxxxxxxxl4yww")
 	LiquidityContract   = parseEmbedded("z1qxemdeddedxlyquydytyxxxxxxxxxxxxflaaae")
 	AcceleratorContract = parseEmbedded("z1qxemdeddedxaccelerat0rxxxxxxxxxxp4tk22")
+	PtlcContract        = parseEmbedded("z1qxemdeddedxptlcxxxxxxxxxxxxxxxxx6lqady")
 
-	EmbeddedContracts = []Address{PlasmaContract, PillarContract, TokenContract, SentinelContract, SwapContract, StakeContract, SporkContract, LiquidityContract, AcceleratorContract}
-	EmbeddedWUpdate   = []Address{PillarContract, StakeContract, SentinelContract, LiquidityContract, AcceleratorContract}
+	EmbeddedContracts = []Address{PlasmaContract, PillarContract, TokenContract, SentinelContract, SwapContract, StakeContract, SporkContract, LiquidityContract, AcceleratorContract, PtlcContract}
+	EmbeddedWUpdate   = []Address{PillarContract, StakeContract, SentinelContract, LiquidityContract, AcceleratorContract, PtlcContract}
 
 	SporkAddress *Address
 )
