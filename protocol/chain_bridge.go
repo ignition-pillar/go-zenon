@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -180,6 +181,7 @@ func (c chainBridge) InsertChain(momentums []*nom.DetailedMomentum) (int, error)
 
 	// Insert momentum now
 	for index, detailed := range momentums {
+		startTime := time.Now()
 		for _, block := range detailed.AccountBlocks {
 			if block.BlockType == nom.BlockTypeContractSend {
 				continue
@@ -207,6 +209,7 @@ func (c chainBridge) InsertChain(momentums []*nom.DetailedMomentum) (int, error)
 			log.Error("error while inserting momentum", "reason", err, "momentum-identifier", detailed.Momentum.Identifier())
 			return index + start, err
 		}
+		fmt.Printf("Applied momentum %d - Duration: %s\n", detailed.Momentum.Height, time.Since(startTime))
 	}
 
 	return 0, nil
