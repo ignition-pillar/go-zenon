@@ -232,6 +232,7 @@ func GetEmbeddedMethod(context vm_context.AccountVmContext, address types.Addres
 	}
 
 	var contractsMap map[types.Address]*embeddedImplementation
+
 	if context.IsPtlcSporkEnforced() {
 		contractsMap = ptlcEmbedded
 	} else if context.IsHtlcSporkEnforced() {

@@ -2,6 +2,7 @@ package definition
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"math/big"
 	"strings"
 
@@ -192,7 +193,7 @@ func GetPillarsList(context db.DB, onlyActive bool, pillarType uint8) ([]*Pillar
 		}
 
 		if pillar, err := parsePillarInfo(iterator.Value()); err == nil {
-			if (onlyActive == false || pillar.RevokeTime == 0) && (pillarType == AnyPillarType || pillarType == pillar.PillarType) {
+			if (!onlyActive || pillar.RevokeTime == 0) && (pillarType == AnyPillarType || pillarType == pillar.PillarType) {
 				list = append(list, pillar)
 			}
 		} else if err == constants.ErrDataNonExistent {
@@ -508,4 +509,46 @@ func GetPillarEpochHistoryList(context db.DB, epoch uint64) ([]*PillarEpochHisto
 	}
 
 	return list, nil
+}
+
+type PillarEpochHistoryMarshal struct {
+	Name                         string `json:"name"`
+	Epoch                        uint64 `json:"epoch"`
+	GiveBlockRewardPercentage    uint8  `json:"giveBlockRewardPercentage"`
+	GiveDelegateRewardPercentage uint8  `json:"giveDelegateRewardPercentage"`
+	ProducedBlockNum             int32  `json:"producedBlockNum"`
+	ExpectedBlockNum             int32  `json:"expectedBlockNum"`
+	Weight                       string `json:"weight"`
+}
+
+func (g *PillarEpochHistory) ToPillarEpochHistoryMarshal() *PillarEpochHistoryMarshal {
+	aux := &PillarEpochHistoryMarshal{
+		Name:                         g.Name,
+		Epoch:                        g.Epoch,
+		GiveBlockRewardPercentage:    g.GiveBlockRewardPercentage,
+		GiveDelegateRewardPercentage: g.GiveDelegateRewardPercentage,
+		ProducedBlockNum:             g.ProducedBlockNum,
+		ExpectedBlockNum:             g.ExpectedBlockNum,
+		Weight:                       g.Weight.String(),
+	}
+	return aux
+}
+
+func (g *PillarEpochHistory) MarshalJSON() ([]byte, error) {
+	return json.Marshal(g.ToPillarEpochHistoryMarshal())
+}
+
+func (g *PillarEpochHistory) UnmarshalJSON(data []byte) error {
+	aux := new(PillarEpochHistoryMarshal)
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+	g.Name = aux.Name
+	g.Epoch = aux.Epoch
+	g.GiveBlockRewardPercentage = aux.GiveBlockRewardPercentage
+	g.GiveDelegateRewardPercentage = aux.GiveDelegateRewardPercentage
+	g.ProducedBlockNum = aux.ProducedBlockNum
+	g.ExpectedBlockNum = aux.ExpectedBlockNum
+	g.Weight = common.StringToBigInt(aux.Weight)
+	return nil
 }
